@@ -48,18 +48,32 @@ lives.innerHTML = "Lives: 10";
 guessLetters.innerHTML = "Guesses:  "
 returnDisplay.innerHTML = "- - - - -";
 document.getElementById("winBox").innerHTML = "Wins: 0"
-document.getElementById("lossBox").innerHTML = "Loss: 0"		
+document.getElementById("lossBox").innerHTML = "Loss: 0"	
+document.getElementById("timerBox").innerHTML = "120"
 
 //Game's main function
 mainFunction();
 function mainFunction() {
-	document.onkeyup = function(event) {
-
+	document.onkeyup = function(event) {		
 		var entryInput = event.key;
 
 		if (entryInput === "Enter") {
+			new Audio('assets/sounds/intro.mp3').play();		
+			
+			var timerGame = 120;
+			myTimer = setInterval (function() { 
+				document.getElementById("timerBox").innerHTML = timerGame;
+				timerGame--;
+				if (timerGame === -1) {
+					clearTimeout(myTimer);
+					blinky.innerHTML = "Times Up Chum!" + "<br>" + "Press Enter to continue"
+					lossscore++;
+					document.getElementById("lossBox").innerHTML = "Loss: " + lossscore
+					guessLetters.innerHTML = "Answer: " + "<div style='display: inline; letter-spacing: 4px; color: red;'>" + bufferWord + "</div>"
+					mainFunction();
+				}
+			}, 1000);				
 
-			new Audio('assets/sounds/intro.mp3').play();
 			randomNumberForSound = Math.floor(Math.random() * 4) + 0;
 
 			var mainI = 0;
@@ -83,7 +97,7 @@ function mainFunction() {
 			console.log(bufferWord);
 
 			document.onkeyup = function(event) {
-				var userInput = event.key;
+				var userInput = event.key;				
 
 				if (mainI < gameOver) {				
 					console.log(userInput);
@@ -93,8 +107,7 @@ function mainFunction() {
 					//clearInterval(hurryVariable);
 					//var hurryVariable = setInterval (function() {
 					//	setTimeout(function() {new Audio('assets/sounds/hurry.mp3').play();}, 10000);
-					//}, 10000); 
-												
+					//}, 10000); 												
 
 					if (inputsList.indexOf(userInput) === -1 && alphabet.indexOf(userInput) !== -1) {
 						if (bufferWord.indexOf(userInput) > -1) {
@@ -110,7 +123,7 @@ function mainFunction() {
 							}					
 
 							//console.log(arrayWord);s
-							blinky.innerHTML = "Good Luck Chum" + "<br><br>" + "Good One!"	
+							blinky.innerHTML = "Good Luck Chum!" + "<br>" + "Good One!"	
 							new Audio('assets/sounds/goodletter.mp3').play();
 							inputsList.push(userInput);	
 
@@ -118,13 +131,13 @@ function mainFunction() {
 						}
 						else {
 							inputsList.push(userInput);	
-							blinky.innerHTML = "Good Luck Chum" + "<br><br>" + "No Match!"
+							blinky.innerHTML = "Good Luck Chum!" + "<br>" + "No Match!"
 							new Audio('assets/sounds/badletter.mp3').play();
 							mainI++;
 						}
 					}
 					else {
-						blinky.innerHTML = "Good Luck Chum" + "<br><br>" + "Character No Good!"
+						blinky.innerHTML = "Good Luck Chum!" + "<br>" + "Character No Good!"
 						new Audio('assets/sounds/noletter.mp3').play();
 					}
 
@@ -141,16 +154,18 @@ function mainFunction() {
 					if (displayWord.indexOf(" - ") === -1) {
 						winscore++;
 						document.getElementById("winBox").innerHTML = "Wins: " + winscore
-						blinky.innerHTML = "Beginner's Luck" + "<br><br>" + "Press Enter to continue"
+						blinky.innerHTML = "Beginner's Luck!" + "<br>" + "Press Enter to continue"
 						setTimeout(function() {new Audio(soundOfBenderWin[randomNumberForSound]).play();}, 2000);
+						clearTimeout(myTimer);
 						mainFunction();
 					}
 					else if (mainI === gameOver) {
 						lossscore++;
 						document.getElementById("lossBox").innerHTML = "Loss: " + lossscore
-						blinky.innerHTML = "Hasta la vista Meatbag" + "<br><br>" + "Press Enter to continue"
-						guessLetters.innerHTML = "The word is: " + bufferWord;
+						blinky.innerHTML = "Hasta la vista Meatbag!" + "<br>" + "Press Enter to continue"
+						guessLetters.innerHTML = "Answer: " + "<div style='display: inline; letter-spacing: 4px; color: red;'>" + bufferWord + "</div>"
 						setTimeout(function() {new Audio(soundOfBenderLoss[randomNumberForSound]).play();}, 2000);
+						clearTimeout(myTimer);
 						mainFunction();
 					}								
 				}
